@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// +build linux netbsd openbsd
+// +build linux netbsd openbsd solaris
 
 package osext
 
@@ -10,6 +10,7 @@ import (
 	"errors"
 	"os"
 	"runtime"
+	"strconv"
 )
 
 func executable() (string, error) {
@@ -20,6 +21,8 @@ func executable() (string, error) {
 		return os.Readlink("/proc/curproc/exe")
 	case "openbsd":
 		return os.Readlink("/proc/curproc/file")
+	case "solaris":
+		return os.Readlink("/proc/" + strconv.Itoa(os.Getpid()) + "/path/a.out")
 	}
 	return "", errors.New("ExecPath not implemented for " + runtime.GOOS)
 }
